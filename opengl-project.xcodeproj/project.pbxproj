@@ -34,7 +34,6 @@
 		C319563520C7806900E1D7A9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C39F15EF20C77008000BE728 /* opengl-project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "opengl-project"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39F15F220C77008000BE728 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		C39F15FA20C7761F000BE728 /* gamma */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = gamma; path = "../../Downloads/glfw-3.2.1/tests/gamma"; sourceTree = "<group>"; };
 		C39F15FC20C77821000BE728 /* GLFW */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GLFW; path = ../../../../usr/local/include/GLFW; sourceTree = "<group>"; };
 		C39F15FE20C77853000BE728 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = ../../../../usr/local/lib/libglfw3.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -90,7 +89,6 @@
 				C319562F20C77FAA00E1D7A9 /* OpenGL.framework */,
 				C39F15FE20C77853000BE728 /* libglfw3.a */,
 				C39F15FC20C77821000BE728 /* GLFW */,
-				C39F15FA20C7761F000BE728 /* gamma */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
