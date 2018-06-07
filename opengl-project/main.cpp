@@ -5,8 +5,8 @@
 //  Created by ped on 2018/6/6.
 //  Copyright © 2018年 ped. All rights reserved.
 //
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "include/glad.h"
+#include "include/glfw3.h"
 #include <iostream>
 #include "shader.hpp"
 
