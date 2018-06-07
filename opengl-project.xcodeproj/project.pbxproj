@@ -11,6 +11,7 @@
 		C319563420C7805E00E1D7A9 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C319563320C7805E00E1D7A9 /* IOKit.framework */; };
 		C319563620C7806900E1D7A9 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C319563520C7806900E1D7A9 /* CoreVideo.framework */; };
 		C319563E20C8F97300E1D7A9 /* glad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C319563D20C8F97300E1D7A9 /* glad.cpp */; };
+		C319564120C90A0700E1D7A9 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C319563F20C90A0700E1D7A9 /* shader.cpp */; };
 		C39F15F320C77008000BE728 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C39F15F220C77008000BE728 /* main.cpp */; };
 		C39F15FF20C77853000BE728 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C39F15FE20C77853000BE728 /* libglfw3.a */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
@@ -32,6 +33,10 @@
 		C319563320C7805E00E1D7A9 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		C319563520C7806900E1D7A9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C319563D20C8F97300E1D7A9 /* glad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glad.cpp; sourceTree = "<group>"; };
+		C319563F20C90A0700E1D7A9 /* shader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
+		C319564020C90A0700E1D7A9 /* shader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = shader.hpp; sourceTree = "<group>"; };
+		C319564320C914A300E1D7A9 /* shader.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shader.vs; sourceTree = "<group>"; };
+		C319564420C914B500E1D7A9 /* shader.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shader.fs; sourceTree = "<group>"; };
 		C39F15EF20C77008000BE728 /* opengl-project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "opengl-project"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39F15F220C77008000BE728 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C39F15FC20C77821000BE728 /* GLFW */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GLFW; path = ../../../../usr/local/include/GLFW; sourceTree = "<group>"; };
@@ -76,6 +81,10 @@
 			children = (
 				C319563D20C8F97300E1D7A9 /* glad.cpp */,
 				C39F15F220C77008000BE728 /* main.cpp */,
+				C319563F20C90A0700E1D7A9 /* shader.cpp */,
+				C319564020C90A0700E1D7A9 /* shader.hpp */,
+				C319564320C914A300E1D7A9 /* shader.vs */,
+				C319564420C914B500E1D7A9 /* shader.fs */,
 			);
 			path = "opengl-project";
 			sourceTree = "<group>";
@@ -148,6 +157,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C319564120C90A0700E1D7A9 /* shader.cpp in Sources */,
 				C39F15F320C77008000BE728 /* main.cpp in Sources */,
 				C319563E20C8F97300E1D7A9 /* glad.cpp in Sources */,
 			);
