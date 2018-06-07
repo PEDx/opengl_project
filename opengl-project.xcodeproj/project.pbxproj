@@ -10,7 +10,7 @@
 		C319563220C7802700E1D7A9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C319563120C7802700E1D7A9 /* Cocoa.framework */; };
 		C319563420C7805E00E1D7A9 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C319563320C7805E00E1D7A9 /* IOKit.framework */; };
 		C319563620C7806900E1D7A9 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C319563520C7806900E1D7A9 /* CoreVideo.framework */; };
-		C319563A20C8EB0900E1D7A9 /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = C319563920C8EB0900E1D7A9 /* glad.c */; };
+		C319563E20C8F97300E1D7A9 /* glad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C319563D20C8F97300E1D7A9 /* glad.cpp */; };
 		C39F15F320C77008000BE728 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C39F15F220C77008000BE728 /* main.cpp */; };
 		C39F15FF20C77853000BE728 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C39F15FE20C77853000BE728 /* libglfw3.a */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
@@ -31,7 +31,7 @@
 		C319563120C7802700E1D7A9 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C319563320C7805E00E1D7A9 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		C319563520C7806900E1D7A9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
-		C319563920C8EB0900E1D7A9 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glad.c; sourceTree = "<group>"; };
+		C319563D20C8F97300E1D7A9 /* glad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glad.cpp; sourceTree = "<group>"; };
 		C39F15EF20C77008000BE728 /* opengl-project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "opengl-project"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39F15F220C77008000BE728 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C39F15FC20C77821000BE728 /* GLFW */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GLFW; path = ../../../../usr/local/include/GLFW; sourceTree = "<group>"; };
@@ -74,7 +74,7 @@
 		C39F15F120C77008000BE728 /* opengl-project */ = {
 			isa = PBXGroup;
 			children = (
-				C319563920C8EB0900E1D7A9 /* glad.c */,
+				C319563D20C8F97300E1D7A9 /* glad.cpp */,
 				C39F15F220C77008000BE728 /* main.cpp */,
 			);
 			path = "opengl-project";
@@ -149,7 +149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C39F15F320C77008000BE728 /* main.cpp in Sources */,
-				C319563A20C8EB0900E1D7A9 /* glad.c in Sources */,
+				C319563E20C8F97300E1D7A9 /* glad.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
