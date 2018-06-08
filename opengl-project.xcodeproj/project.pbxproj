@@ -40,6 +40,7 @@
 		C319564820C9223300E1D7A9 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = "opengl-project/lib/libglfw3.a"; sourceTree = "<group>"; };
 		C319564A20C9224E00E1D7A9 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
 		C319564B20C9224E00E1D7A9 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
+		C319568C20CA295400E1D7A9 /* sample.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sample.jpeg; sourceTree = "<group>"; };
 		C39F15EF20C77008000BE728 /* opengl-project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "opengl-project"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39F15F220C77008000BE728 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -59,6 +60,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C319568B20CA259D00E1D7A9 /* test */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
 		C39F15E620C77008000BE728 = {
 			isa = PBXGroup;
 			children = (
@@ -80,11 +88,13 @@
 		C39F15F120C77008000BE728 /* opengl-project */ = {
 			isa = PBXGroup;
 			children = (
+				C319568B20CA259D00E1D7A9 /* test */,
 				C319564B20C9224E00E1D7A9 /* include */,
 				C319564A20C9224E00E1D7A9 /* lib */,
 				C319563D20C8F97300E1D7A9 /* glad.cpp */,
 				C39F15F220C77008000BE728 /* main.cpp */,
 				C319563F20C90A0700E1D7A9 /* shader.cpp */,
+				C319568C20CA295400E1D7A9 /* sample.jpeg */,
 				C319564020C90A0700E1D7A9 /* shader.hpp */,
 				C319564320C914A300E1D7A9 /* shader.vs */,
 				C319564420C914B500E1D7A9 /* shader.fs */,
