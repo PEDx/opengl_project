@@ -22,11 +22,11 @@ using namespace std;
 void reportGlInfo();
 void processInput(GLFWwindow *window);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-void createWindow();
+GLFWwindow *createWindow();
 
 int main()
 {
-    createWindow();
+    GLFWwindow *window = createWindow();
 
     reportGlInfo();
 
@@ -95,11 +95,21 @@ int main()
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     m_shader.userShader();
 
+
+    unsigned int transformLoc = glGetUniformLocation(m_shader.ID, "transform");
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
 
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // create transformations
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+        transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
@@ -109,14 +119,15 @@ int main()
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glfwTerminate();
+
     return 0;
 }
 
-void createWindow()
+GLFWwindow *createWindow()
 {
     if (!glfwInit())
     {
-        return -1;
+        throw "glfwInit failed!";
     }
 
 #ifdef __APPLE__
@@ -132,16 +143,16 @@ void createWindow()
     if (!window)
     {
         glfwTerminate();
-        return -1;
+        throw "create window failed!";
     }
     // Must be under the glfwMakeContextCurrent function call
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        cout << "Failed to initialize GLAD" << endl;
-        return -1;
+        throw "Failed to initialize GLAD";
     }
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    return window;
 }
 
 void reportGlInfo()
