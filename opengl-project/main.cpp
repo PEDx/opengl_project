@@ -10,68 +10,23 @@
 #include "include/glfw3.h"
 #include <iostream>
 #include "shader.hpp"
+#include "include/glm/glm.hpp"
+#include "include/glm/gtc/matrix_transform.hpp"
+#include "include/glm/gtc/type_ptr.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "include/stb_image.h"
 
 using namespace std;
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
-void processInput(GLFWwindow *window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
-
-void reportGlInfo()
-{
-    cout << "\n\n>>>>>>>>>>>>>>>>>>>>>> OpenGL Info <<<<<<<<<<<<<<<<<<<<<<<\n"
-         << endl;
-    cout << "OpenGL Vendor:" << glGetString(GL_VENDOR) << endl;
-    cout << "OpenGL Renderer: " << glGetString(GL_RENDERER) << endl;
-    cout << "OpenGL Version: " << glGetString(GL_VERSION) << endl;
-    cout << "GLSL Version:" << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
-    int nrAttributes;
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-    cout << "Maximum nr of vertex attributes supported: " << nrAttributes << endl;
-    cout << "\n>>>>>>>>>>>>>>>>>>>>>> OpenGL Info <<<<<<<<<<<<<<<<<<<<<<<\n\n"
-         << endl;
-}
+void reportGlInfo();
+void processInput(GLFWwindow *window);
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+void createWindow();
 
 int main()
 {
-    if (!glfwInit())
-    {
-        return -1;
-    }
-
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Mac OS X required
-#endif
-
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    GLFWwindow *window = glfwCreateWindow(800, 600, "Hello OpenGL", NULL, NULL);
-    glfwMakeContextCurrent(window);
-
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-    // Must be under the glfwMakeContextCurrent function call
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        cout << "Failed to initialize GLAD" << endl;
-        return -1;
-    }
-
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    createWindow();
 
     reportGlInfo();
 
@@ -113,8 +68,6 @@ int main()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    glBindVertexArray(0);
-
     unsigned int texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -124,11 +77,13 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("./sample.jpeg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("./sample.png", &width, &height, &nrChannels, 0);
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -145,8 +100,6 @@ int main()
         processInput(window);
 
         glClear(GL_COLOR_BUFFER_BIT);
-
-        glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
@@ -157,4 +110,69 @@ int main()
     glDeleteBuffers(1, &VBO);
     glfwTerminate();
     return 0;
+}
+
+void createWindow()
+{
+    if (!glfwInit())
+    {
+        return -1;
+    }
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Mac OS X required
+#endif
+
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    GLFWwindow *window = glfwCreateWindow(800, 600, "Hello OpenGL", NULL, NULL);
+    glfwMakeContextCurrent(window);
+
+    if (!window)
+    {
+        glfwTerminate();
+        return -1;
+    }
+    // Must be under the glfwMakeContextCurrent function call
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        cout << "Failed to initialize GLAD" << endl;
+        return -1;
+    }
+
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+}
+
+void reportGlInfo()
+{
+    cout << "\n\n>>>>>>>>>>>>>>>>>>>>>> OpenGL Info <<<<<<<<<<<<<<<<<<<<<<<\n"
+         << endl;
+    cout << "OpenGL Vendor:" << glGetString(GL_VENDOR) << endl;
+    cout << "OpenGL Renderer: " << glGetString(GL_RENDERER) << endl;
+    cout << "OpenGL Version: " << glGetString(GL_VERSION) << endl;
+    cout << "GLSL Version:" << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
+    int nrAttributes;
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+    cout << "Maximum nr of vertex attributes supported: " << nrAttributes << endl;
+    cout << "\n>>>>>>>>>>>>>>>>>>>>>> OpenGL Info <<<<<<<<<<<<<<<<<<<<<<<\n\n"
+         << endl;
+
+    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+    vec = trans * vec;
+    std::cout << "vecvecvecvecvecvecvecvecvec" << std::endl;
+    std::cout << vec.x << " " << vec.y << " " << vec.z << std::endl;
+}
+
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+void processInput(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
 }
