@@ -7,6 +7,7 @@
 //
 
 #include "shader.hpp"
+
 using namespace std;
 
 Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
@@ -59,7 +60,6 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
   glLinkProgram(ID);
   checkShaderCompileErrors(ID, "PROGRAM");
 
-
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
 };
@@ -79,6 +79,10 @@ void Shader::setInt(const std::string &name, int value) const
 void Shader::setFloat(const std::string &name, float value) const
 {
   glUniform1i(glGetUniformLocation(ID, name.c_str()), (float)value);
+};
+void Shader::setMat4(const std::string &name, const glm::mat4 &mat) const
+{
+  glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 };
 
 void Shader::checkShaderCompileErrors(unsigned int shader, std::string type)
