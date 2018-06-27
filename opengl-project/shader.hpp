@@ -9,9 +9,9 @@
 #ifndef shader_hpp
 #define shader_hpp
 
-#include "include/glad.h"
-#include "include/glm/glm.hpp"
-#include "include/glm/gtc/matrix_transform.hpp"
+#include "lib/glad.h"
+#include "lib/glm/glm.hpp"
+#include "lib/glm/gtc/matrix_transform.hpp"
 
 #include <string>
 #include <fstream>
