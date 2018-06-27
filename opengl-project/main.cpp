@@ -164,6 +164,7 @@ int main()
         object_shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         object_shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         object_shader.setVec3("lightPos", lightPos);
+        object_shader.setVec3("viewPos", camera.Position);
         glm::mat4 view = camera.GetViewMatrix();
         object_shader.setMat4("view", view);
 
