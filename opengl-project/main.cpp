@@ -135,7 +135,7 @@ int main()
     //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("./sample.png", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("./box_timber.png", &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -165,8 +165,7 @@ int main()
         // object_shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         object_shader.setVec3("viewPos", camera.Position);
 
-        object_shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-        object_shader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+        object_shader.setInt("material.diffuse", 0);
         object_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
         object_shader.setInt("material.shininess", 32);
 
@@ -175,11 +174,11 @@ int main()
         lightColor.y = sin(glfwGetTime() * 0.7f);
         lightColor.z = sin(glfwGetTime() * 1.3f);
 
-        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);   // 降低影响
-        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // 很低的影响
+        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
 
-        object_shader.setVec3("light.ambient", ambientColor);
-        object_shader.setVec3("light.diffuse", diffuseColor);
+        object_shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        object_shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
         object_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
         object_shader.setVec3("light.position", lightPos);
 
