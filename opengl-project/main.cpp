@@ -162,7 +162,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
         object_shader.userShader();
         object_shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        object_shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        // object_shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         object_shader.setVec3("viewPos", camera.Position);
 
         object_shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
@@ -170,10 +170,18 @@ int main()
         object_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
         object_shader.setInt("material.shininess", 32);
 
-        object_shader.setVec3("light.position", lightPos);
-        object_shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-        object_shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        glm::vec3 lightColor;
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+
+        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);   // 降低影响
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // 很低的影响
+
+        object_shader.setVec3("light.ambient", ambientColor);
+        object_shader.setVec3("light.diffuse", diffuseColor);
         object_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        object_shader.setVec3("light.position", lightPos);
 
         glm::mat4 view = camera.GetViewMatrix();
         object_shader.setMat4("view", view);
