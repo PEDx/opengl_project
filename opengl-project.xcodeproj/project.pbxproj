@@ -46,6 +46,7 @@
 		C3F3A61F20E3222500BA986F /* object.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = object.fs; sourceTree = "<group>"; };
 		C3F3A62020E3222500BA986F /* object.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = object.vs; sourceTree = "<group>"; };
 		C3F3A62120E370F700BA986F /* box_timber.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = box_timber.png; sourceTree = "<group>"; };
+		C3F3A62220E3782E00BA986F /* box_specular_map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = box_specular_map.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,8 +98,7 @@
 				C319564A20C9224E00E1D7A9 /* lib */,
 				C39F15F220C77008000BE728 /* main.cpp */,
 				C319563F20C90A0700E1D7A9 /* shader.cpp */,
-				C35D510C20DB46BB00C2C54D /* sample.png */,
-				C3F3A62120E370F700BA986F /* box_timber.png */,
+				C3F3A62320E3783400BA986F /* img */,
 				C35D511120DB892400C2C54D /* glad.cpp */,
 				C319564020C90A0700E1D7A9 /* shader.hpp */,
 			);
@@ -125,6 +125,16 @@
 				C3F3A62020E3222500BA986F /* object.vs */,
 			);
 			path = shader;
+			sourceTree = "<group>";
+		};
+		C3F3A62320E3783400BA986F /* img */ = {
+			isa = PBXGroup;
+			children = (
+				C35D510C20DB46BB00C2C54D /* sample.png */,
+				C3F3A62120E370F700BA986F /* box_timber.png */,
+				C3F3A62220E3782E00BA986F /* box_specular_map.png */,
+			);
+			path = img;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
