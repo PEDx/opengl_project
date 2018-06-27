@@ -163,8 +163,18 @@ int main()
         object_shader.userShader();
         object_shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         object_shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        object_shader.setVec3("lightPos", lightPos);
         object_shader.setVec3("viewPos", camera.Position);
+
+        object_shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+        object_shader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+        object_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+        object_shader.setInt("material.shininess", 32);
+
+        object_shader.setVec3("light.position", lightPos);
+        object_shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        object_shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        object_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
         glm::mat4 view = camera.GetViewMatrix();
         object_shader.setMat4("view", view);
 
@@ -172,7 +182,7 @@ int main()
         object_shader.setMat4("projection", projection);
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, (float)glfwGetTime() *  glm::radians(45.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(45.0f), glm::vec3(1.0f, 1.0f, 0.0f));
         object_shader.setMat4("model", model);
 
         // render the cube
