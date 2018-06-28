@@ -146,6 +146,10 @@ int main()
     object_shader.setInt("material.diffuse", 0);
     object_shader.setInt("material.specular", 1);
 
+    object_shader.setFloat("light.constant", 1.0f);
+    object_shader.setFloat("light.linear", 0.09f);
+    object_shader.setFloat("light.quadratic", 0.032f);
+
     glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
     while (!glfwWindowShouldClose(window))
     {
@@ -174,7 +178,7 @@ int main()
         object_shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
         object_shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
         object_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-        object_shader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+        object_shader.setVec3("light.position", lightPos);
 
         glm::mat4 view = camera.GetViewMatrix();
         object_shader.setMat4("view", view);
