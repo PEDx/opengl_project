@@ -138,17 +138,28 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
-    object_shader.userShader();
+
     //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     unsigned int diffuseMap = loadTexture("./img/box_timber.png");
     unsigned int specularMap = loadTexture("./img/box_specular_map.png");
 
+    object_shader.userShader();
+
+    object_shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+
     object_shader.setInt("material.diffuse", 0);
     object_shader.setInt("material.specular", 1);
+    object_shader.setInt("material.shininess", 64);
 
     object_shader.setFloat("light.constant", 1.0f);
     object_shader.setFloat("light.linear", 0.09f);
     object_shader.setFloat("light.quadratic", 0.032f);
+
+    object_shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+    object_shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+    object_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+    object_shader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+    object_shader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
 
     glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
     while (!glfwWindowShouldClose(window))
@@ -161,24 +172,12 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
         object_shader.userShader();
-        object_shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+
         // object_shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         object_shader.setVec3("viewPos", camera.Position);
+        object_shader.setVec3("light.position", camera.Position);
+        object_shader.setVec3("light.direction", camera.Front);
 
-        object_shader.setInt("material.shininess", 64);
-
-        glm::vec3 lightColor;
-        lightColor.x = sin(glfwGetTime() * 2.0f);
-        lightColor.y = sin(glfwGetTime() * 0.7f);
-        lightColor.z = sin(glfwGetTime() * 1.3f);
-
-        // glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-        // glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
-
-        object_shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-        object_shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-        object_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-        object_shader.setVec3("light.position", lightPos);
 
         glm::mat4 view = camera.GetViewMatrix();
         object_shader.setMat4("view", view);
