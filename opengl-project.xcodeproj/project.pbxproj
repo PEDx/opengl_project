@@ -14,6 +14,7 @@
 		C35D511220DB892400C2C54D /* glad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C35D511120DB892400C2C54D /* glad.cpp */; };
 		C39F15F320C77008000BE728 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C39F15F220C77008000BE728 /* main.cpp */; };
 		C3C7364320E9B74800D21CB4 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C3C7364220E9B74800D21CB4 /* libglfw3.a */; };
+		C3C738E320E9BD8100D21CB4 /* libassimp.4.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C3C738E220E9BD8100D21CB4 /* libassimp.4.0.1.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +41,8 @@
 		C39F15EF20C77008000BE728 /* opengl-project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "opengl-project"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39F15F220C77008000BE728 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C3C7364220E9B74800D21CB4 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = "opengl-project/lib/libglfw3.a"; sourceTree = "<group>"; };
+		C3C738E120E9BB4F00D21CB4 /* includes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = includes; sourceTree = "<group>"; };
+		C3C738E220E9BD8100D21CB4 /* libassimp.4.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.0.1.dylib; path = "opengl-project/lib/libassimp.4.0.1.dylib"; sourceTree = "<group>"; };
 		C3F3A61D20E3222500BA986F /* lamp.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lamp.fs; sourceTree = "<group>"; };
 		C3F3A61E20E3222500BA986F /* lamp.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lamp.vs; sourceTree = "<group>"; };
 		C3F3A61F20E3222500BA986F /* object.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = object.fs; sourceTree = "<group>"; };
@@ -53,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3C738E320E9BD8100D21CB4 /* libassimp.4.0.1.dylib in Frameworks */,
 				C3C7364320E9B74800D21CB4 /* libglfw3.a in Frameworks */,
 				C319563620C7806900E1D7A9 /* CoreVideo.framework in Frameworks */,
 				C319563420C7805E00E1D7A9 /* IOKit.framework in Frameworks */,
@@ -91,6 +95,7 @@
 		C39F15F120C77008000BE728 /* opengl-project */ = {
 			isa = PBXGroup;
 			children = (
+				C3C738E120E9BB4F00D21CB4 /* includes */,
 				C3F3A61C20E3222500BA986F /* shader */,
 				C319568B20CA259D00E1D7A9 /* test */,
 				C319564B20C9224E00E1D7A9 /* lib */,
@@ -106,6 +111,7 @@
 		C39F15F920C7761F000BE728 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C3C738E220E9BD8100D21CB4 /* libassimp.4.0.1.dylib */,
 				C3C7364220E9B74800D21CB4 /* libglfw3.a */,
 				C319563520C7806900E1D7A9 /* CoreVideo.framework */,
 				C319563320C7805E00E1D7A9 /* IOKit.framework */,
