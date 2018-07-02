@@ -13,7 +13,7 @@
 		C319564120C90A0700E1D7A9 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C319563F20C90A0700E1D7A9 /* shader.cpp */; };
 		C35D511220DB892400C2C54D /* glad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C35D511120DB892400C2C54D /* glad.cpp */; };
 		C39F15F320C77008000BE728 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C39F15F220C77008000BE728 /* main.cpp */; };
-		C3C7363B20E391D300D21CB4 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C3C7363A20E391D300D21CB4 /* libglfw3.a */; };
+		C3C7364320E9B74800D21CB4 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C3C7364220E9B74800D21CB4 /* libglfw3.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,13 +34,12 @@
 		C319563520C7806900E1D7A9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C319563F20C90A0700E1D7A9 /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = shader.cpp; sourceTree = "<group>"; wrapsLines = 1; };
 		C319564020C90A0700E1D7A9 /* shader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = shader.hpp; sourceTree = "<group>"; };
-		C319564A20C9224E00E1D7A9 /* bin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bin; sourceTree = "<group>"; };
 		C319564B20C9224E00E1D7A9 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
 		C35D510C20DB46BB00C2C54D /* sample.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sample.png; sourceTree = "<group>"; };
 		C35D511120DB892400C2C54D /* glad.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = glad.cpp; sourceTree = "<group>"; };
 		C39F15EF20C77008000BE728 /* opengl-project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "opengl-project"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39F15F220C77008000BE728 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		C3C7363A20E391D300D21CB4 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = "opengl-project/bin/libglfw3.a"; sourceTree = "<group>"; };
+		C3C7364220E9B74800D21CB4 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = "opengl-project/lib/libglfw3.a"; sourceTree = "<group>"; };
 		C3F3A61D20E3222500BA986F /* lamp.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lamp.fs; sourceTree = "<group>"; };
 		C3F3A61E20E3222500BA986F /* lamp.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lamp.vs; sourceTree = "<group>"; };
 		C3F3A61F20E3222500BA986F /* object.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = object.fs; sourceTree = "<group>"; };
@@ -54,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3C7363B20E391D300D21CB4 /* libglfw3.a in Frameworks */,
+				C3C7364320E9B74800D21CB4 /* libglfw3.a in Frameworks */,
 				C319563620C7806900E1D7A9 /* CoreVideo.framework in Frameworks */,
 				C319563420C7805E00E1D7A9 /* IOKit.framework in Frameworks */,
 				C319563220C7802700E1D7A9 /* Cocoa.framework in Frameworks */,
@@ -95,7 +94,6 @@
 				C3F3A61C20E3222500BA986F /* shader */,
 				C319568B20CA259D00E1D7A9 /* test */,
 				C319564B20C9224E00E1D7A9 /* lib */,
-				C319564A20C9224E00E1D7A9 /* bin */,
 				C39F15F220C77008000BE728 /* main.cpp */,
 				C319563F20C90A0700E1D7A9 /* shader.cpp */,
 				C3F3A62320E3783400BA986F /* img */,
@@ -108,7 +106,7 @@
 		C39F15F920C7761F000BE728 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C3C7363A20E391D300D21CB4 /* libglfw3.a */,
+				C3C7364220E9B74800D21CB4 /* libglfw3.a */,
 				C319563520C7806900E1D7A9 /* CoreVideo.framework */,
 				C319563320C7805E00E1D7A9 /* IOKit.framework */,
 				C319563120C7802700E1D7A9 /* Cocoa.framework */,

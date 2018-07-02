@@ -6,19 +6,19 @@
 //  Copyright © 2018年 ped. All rights reserved.
 //
 
-#include "lib/glad.h"
-#include "lib/glfw3.h"
+#include "includes/glad.h"
+#include "includes/glfw3.h"
 #include <iostream>
 #include <string>
 #include "shader.hpp"
 #include "camera.hpp"
 
-#include "lib/glm/glm.hpp"
-#include "lib/glm/gtc/matrix_transform.hpp"
-#include "lib/glm/gtc/type_ptr.hpp"
+#include "includes/glm/glm.hpp"
+#include "includes/glm/gtc/matrix_transform.hpp"
+#include "includes/glm/gtc/type_ptr.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "lib/stb_image.h"
+#include "includes/stb_image.h"
 
 const float SCR_WIDTH = 800;
 const float SCR_HEIGHT = 600;
