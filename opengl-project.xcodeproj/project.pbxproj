@@ -43,6 +43,7 @@
 		C3C7364220E9B74800D21CB4 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = "opengl-project/lib/libglfw3.a"; sourceTree = "<group>"; };
 		C3C738E120E9BB4F00D21CB4 /* includes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = includes; sourceTree = "<group>"; };
 		C3C738E220E9BD8100D21CB4 /* libassimp.4.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.0.1.dylib; path = "opengl-project/lib/libassimp.4.0.1.dylib"; sourceTree = "<group>"; };
+		C3C738E420E9C2C500D21CB4 /* mesh.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mesh.hpp; sourceTree = "<group>"; };
 		C3F3A61D20E3222500BA986F /* lamp.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lamp.fs; sourceTree = "<group>"; };
 		C3F3A61E20E3222500BA986F /* lamp.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lamp.vs; sourceTree = "<group>"; };
 		C3F3A61F20E3222500BA986F /* object.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = object.fs; sourceTree = "<group>"; };
@@ -103,6 +104,7 @@
 				C319563F20C90A0700E1D7A9 /* shader.cpp */,
 				C3F3A62320E3783400BA986F /* img */,
 				C35D511120DB892400C2C54D /* glad.cpp */,
+				C3C738E420E9C2C500D21CB4 /* mesh.hpp */,
 				C319564020C90A0700E1D7A9 /* shader.hpp */,
 			);
 			path = "opengl-project";

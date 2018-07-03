@@ -6,8 +6,8 @@
 //  Copyright © 2018年 ped. All rights reserved.
 //
 
-#ifndef shader_hpp
-#define shader_hpp
+#ifndef SHADER_H
+#define SHADER_H
 
 #include "includes/glad.h"
 #include "includes/glm/glm.hpp"
@@ -24,7 +24,6 @@ public:
   unsigned int ID;
   Shader(const GLchar *vertexPath, const GLchar *fragmentPath);
   void userShader();
-  // uniform工具函数
   void setBool(const std::string &name, bool value) const;
   void setInt(const std::string &name, int value) const;
   void setFloat(const std::string &name, float value) const;
@@ -41,4 +40,4 @@ public:
 private:
   void checkShaderCompileErrors(unsigned int shader, std::string type);
 };
-#endif /* shader_hpp */
+#endif /* SHADER_H */
