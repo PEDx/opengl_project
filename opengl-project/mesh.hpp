@@ -7,6 +7,7 @@
 #include "includes/glm/glm.hpp"
 #include "includes/glad.h"
 #include "includes/glfw3.h"
+#include "includes/assimp/scene.h"
 #include "shader.hpp"
 
 using namespace std;
@@ -22,6 +23,7 @@ struct Texture
 {
   unsigned int id;
   string type;
+  aiString path;
 };
 
 class Mesh
@@ -37,7 +39,7 @@ public:
     this->textures = textures;
     this->steupMesh();
   };
-  void draw(Shader shader)
+  void Draw(Shader shader)
   {
     // bind appropriate textures
     unsigned int diffuseNr = 1;
@@ -52,7 +54,6 @@ public:
         number = std::to_string(diffuseNr++);
       else if (name == "texture_specular")
         number = std::to_string(specularNr++); // transfer unsigned int to stream
-
       // now set the sampler to the correct texture unit
       glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
       // and finally bind the texture
@@ -61,7 +62,7 @@ public:
 
     // draw mesh
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, (int)indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
     // always good practice to set everything back to defaults once configured.

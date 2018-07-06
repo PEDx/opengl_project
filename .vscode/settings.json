@@ -8,6 +8,8 @@
     "*.ccs": "xml",
     "*.html": "html",
     "typeinfo": "cpp",
-    "__bit_reference": "cpp"
+    "__bit_reference": "cpp",
+    "bitset": "cpp",
+    "iosfwd": "cpp"
   }
 }
