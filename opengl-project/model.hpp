@@ -28,7 +28,7 @@ public:
   vector<Texture> textures_loaded;
   Model(char *path)
   {
-    loadModel(path);
+    loadModel(string(path));
   }
   void Draw(Shader shader);
 
