@@ -43,7 +43,9 @@
 		C32BB7F320F49635006DA92A /* model.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = model.vs; sourceTree = "<group>"; };
 		C32BB7F420F49635006DA92A /* object.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = object.fs; sourceTree = "<group>"; };
 		C32BB7F520F49635006DA92A /* object.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = object.vs; sourceTree = "<group>"; };
-		C34F122E20EF577600CA9306 /* bugatti.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bugatti.obj; sourceTree = "<group>"; };
+		C32BB7F720F4AB1F006DA92A /* deer.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = deer.obj; sourceTree = "<group>"; };
+		C32BB7F820F4AB1F006DA92A /* eye-texture-09.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "eye-texture-09.jpg"; sourceTree = "<group>"; };
+		C32BB7F920F4AB1F006DA92A /* i-robot.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "i-robot.obj"; sourceTree = "<group>"; };
 		C34F123220F48F4A00CA9306 /* libassimp.4.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.0.1.dylib; path = "../../Downloads/assimp-4.0.1/build/code/Debug/libassimp.4.0.1.dylib"; sourceTree = "<group>"; };
 		C35D510C20DB46BB00C2C54D /* sample.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sample.png; sourceTree = "<group>"; };
 		C35D511120DB892400C2C54D /* glad.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = glad.cpp; sourceTree = "<group>"; };
@@ -94,10 +96,12 @@
 			path = shader;
 			sourceTree = "<group>";
 		};
-		C34F122D20EF577600CA9306 /* object */ = {
+		C32BB7F620F4AB1F006DA92A /* object */ = {
 			isa = PBXGroup;
 			children = (
-				C34F122E20EF577600CA9306 /* bugatti.obj */,
+				C32BB7F720F4AB1F006DA92A /* deer.obj */,
+				C32BB7F820F4AB1F006DA92A /* eye-texture-09.jpg */,
+				C32BB7F920F4AB1F006DA92A /* i-robot.obj */,
 			);
 			path = object;
 			sourceTree = "<group>";
@@ -127,7 +131,6 @@
 				C319568B20CA259D00E1D7A9 /* test */,
 				C319564B20C9224E00E1D7A9 /* lib */,
 				C39F15F220C77008000BE728 /* main.cpp */,
-				C34F122D20EF577600CA9306 /* object */,
 				C319563F20C90A0700E1D7A9 /* shader.cpp */,
 				C3F3A62320E3783400BA986F /* img */,
 				C35D511120DB892400C2C54D /* glad.cpp */,
@@ -135,6 +138,7 @@
 				C32BB7EF20F49635006DA92A /* shader */,
 				C3C738E620ECB49700D21CB4 /* model.cpp */,
 				C3C738E720ECB49700D21CB4 /* model.hpp */,
+				C32BB7F620F4AB1F006DA92A /* object */,
 				C319564020C90A0700E1D7A9 /* shader.hpp */,
 			);
 			path = "opengl-project";

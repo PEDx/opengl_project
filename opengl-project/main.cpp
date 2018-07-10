@@ -102,9 +102,9 @@ int main()
     reportGlInfo();
 
     Shader lamp_shader("./shader/lamp.vs", "./shader/lamp.fs");
-    // Shader model_shader("./shader/model.vs", "./shader/model.fs");
+    Shader model_shader("./shader/model.vs", "./shader/model.fs");
 
-    Model m_Model("./object/bugatti.obj");
+    Model m_Model("./object/i-robot.obj");
 
     glEnable(GL_DEPTH_TEST);
 
@@ -118,6 +118,8 @@ int main()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
+
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
     while (!glfwWindowShouldClose(window))
@@ -134,15 +136,15 @@ int main()
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
-        // model_shader.userShader();
-        // model_shader.setMat4("view", view);
-        // model_shader.setMat4("projection", projection);
+        model_shader.userShader();
+        model_shader.setMat4("view", view);
+        model_shader.setMat4("projection", projection);
 
-        // glm::mat4 model;
-        // model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
-        // model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));       // it's a bit too big for our scene, so scale it down
-        // model_shader.setMat4("model", model);
-        // m_Model.Draw(model_shader);
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene // it's a bit too big for our scene, so scale it down
+        model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
+        model_shader.setMat4("model", model);
+        m_Model.Draw(model_shader);
 
         lamp_shader.userShader();
         lamp_shader.setMat4("view", view);
@@ -151,7 +153,7 @@ int main()
         glBindVertexArray(lightVAO);
         for (unsigned int i = 0; i < 4; i++)
         {
-            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::mat4(1.0f);
             model = glm::translate(model, pointLightPositions[i]);
             model = glm::scale(model, glm::vec3(0.2f));
             lamp_shader.setMat4("model", model);

@@ -74,6 +74,8 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     }
     else
       vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+
+    vertices.push_back(vertex);
   }
 
   for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -83,17 +85,17 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
       indices.push_back(face.mIndices[j]);
   }
 
-    aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+  aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
-    vector<Texture> diffuseMaps = loadMaterialTextures(material,
-                                                       aiTextureType_DIFFUSE, "texture_diffuse");
+  vector<Texture> diffuseMaps = loadMaterialTextures(material,
+                                                     aiTextureType_DIFFUSE, "texture_diffuse");
 
-    textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+  textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-    vector<Texture> specularMaps = loadMaterialTextures(material,
-                                                        aiTextureType_SPECULAR, "texture_specular");
+  vector<Texture> specularMaps = loadMaterialTextures(material,
+                                                      aiTextureType_SPECULAR, "texture_specular");
 
-    textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+  textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
   return Mesh(vertices, indices, textures);
 }
 
@@ -139,7 +141,7 @@ unsigned int Model::TextureFromFile(const char *path, const string &directory, b
   unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
   if (data)
   {
-      GLenum format = 0;
+    GLenum format = 0;
     if (nrComponents == 1)
       format = GL_RED;
     else if (nrComponents == 3)
