@@ -121,6 +121,13 @@ int main()
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    model_shader.userShader();
+
+    model_shader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+    model_shader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+    model_shader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+    model_shader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+
     glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
     while (!glfwWindowShouldClose(window))
     {
@@ -139,10 +146,11 @@ int main()
         model_shader.userShader();
         model_shader.setMat4("view", view);
         model_shader.setMat4("projection", projection);
+        model_shader.setVec3("viewPos", camera.Position);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene // it's a bit too big for our scene, so scale it down
-        model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
+        model = glm::scale(model, glm::vec3(0.004f));
         model_shader.setMat4("model", model);
         m_Model.Draw(model_shader);
 
@@ -220,13 +228,6 @@ void reportGlInfo()
     cout << "Maximum nr of vertex attributes supported: " << nrAttributes << endl;
     cout << "\n>>>>>>>>>>>>>>>>>>>>>> OpenGL Info <<<<<<<<<<<<<<<<<<<<<<<\n\n"
          << endl;
-
-    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
-    vec = trans * vec;
-    std::cout << "vecvecvecvecvecvecvecvecvec" << std::endl;
-    std::cout << vec.x << " " << vec.y << " " << vec.z << std::endl;
 }
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos)
