@@ -104,7 +104,7 @@ int main()
     Shader lamp_shader("./shader/lamp.vs", "./shader/lamp.fs");
     Shader model_shader("./shader/model.vs", "./shader/model.fs");
 
-    Model m_Model("./object/i-robot.obj");
+    Model m_Model("./object/nanosuit.obj");
 
     glEnable(GL_DEPTH_TEST);
 
@@ -128,6 +128,19 @@ int main()
     model_shader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
     model_shader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
+    for (int i = 0; i < 4; i++)
+    {
+        string t_str = "pointLights[";
+        t_str += to_string(i);
+        model_shader.setVec3(t_str + "].position", pointLightPositions[i]);
+        model_shader.setVec3(t_str + "].ambient", 0.05f, 0.05f, 0.05f);
+        model_shader.setVec3(t_str + "].diffuse", 0.8f, 0.8f, 0.8f);
+        model_shader.setVec3(t_str + "].specular", 1.0f, 1.0f, 1.0f);
+        model_shader.setFloat(t_str + "].constant", 1.0f);
+        model_shader.setFloat(t_str + "].linear", 0.09);
+        model_shader.setFloat(t_str + "].quadratic", 0.032);
+    }
+
     glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
     while (!glfwWindowShouldClose(window))
     {
@@ -150,7 +163,7 @@ int main()
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene // it's a bit too big for our scene, so scale it down
-        model = glm::scale(model, glm::vec3(0.004f));
+        model = glm::scale(model, glm::vec3(0.2f));
         model_shader.setMat4("model", model);
         m_Model.Draw(model_shader);
 

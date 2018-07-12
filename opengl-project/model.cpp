@@ -60,10 +60,15 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     vector.z = mesh->mVertices[i].z;
     vertex.Position = vector;
 
-    vector.x = mesh->mNormals[i].x;
-    vector.y = mesh->mNormals[i].y;
-    vector.z = mesh->mNormals[i].z;
-    vertex.Normal = vector;
+    if (mesh->mNormals)
+    {
+      vector.x = mesh->mNormals[i].x;
+      vector.y = mesh->mNormals[i].y;
+      vector.z = mesh->mNormals[i].z;
+      vertex.Normal = vector;
+    }
+    else
+      vertex.Normal = glm::vec3(0.0f, 1.0f, 0.0f);
 
     if (mesh->mTextureCoords[0])
     {
@@ -102,7 +107,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
 {
   vector<Texture> textures;
-    int count = mat->GetTextureCount(type);
+  int count = mat->GetTextureCount(type);
   for (unsigned int i = 0; i < count; i++)
   {
     aiString str;

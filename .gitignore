@@ -52,3 +52,5 @@ DerivedData/
 *.exe
 *.out
 *.app
+
+object/
