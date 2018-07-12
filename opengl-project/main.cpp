@@ -103,10 +103,15 @@ int main()
 
     Shader lamp_shader("./shader/lamp.vs", "./shader/lamp.fs");
     Shader model_shader("./shader/model.vs", "./shader/model.fs");
+    Shader single_color_shader("./shader/shaderSingleColor.vs", "./shader/shaderSingleColor.fs");
 
     Model m_Model("./object/nanosuit.obj");
 
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_STENCIL_TEST);
+     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     unsigned int lightVAO, VBO;
     glGenVertexArrays(1, &lightVAO);
@@ -119,7 +124,7 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     model_shader.userShader();
 
@@ -150,22 +155,47 @@ int main()
 
         processInput(window);
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // also clear the depth buffer now!
 
         glm::mat4 view = camera.GetViewMatrix();
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+        glm::mat4 model = glm::mat4(1.0f);
+
+
 
         model_shader.userShader();
         model_shader.setMat4("view", view);
         model_shader.setMat4("projection", projection);
         model_shader.setVec3("viewPos", camera.Position);
 
-        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene // it's a bit too big for our scene, so scale it down
         model = glm::scale(model, glm::vec3(0.2f));
         model_shader.setMat4("model", model);
+
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
         m_Model.Draw(model_shader);
+
+        single_color_shader.userShader();
+        single_color_shader.setMat4("view", view);
+        single_color_shader.setMat4("projection", projection);
+
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene // it's a bit too big for our scene, so scale it down
+        model = glm::scale(model, glm::vec3(0.202f));
+        single_color_shader.setMat4("model", model);
+
+        m_Model.Draw(single_color_shader);
+
+        glStencilMask(0xFF);
+        glEnable(GL_DEPTH_TEST);
 
         lamp_shader.userShader();
         lamp_shader.setMat4("view", view);
