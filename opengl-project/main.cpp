@@ -88,7 +88,50 @@ float vertices[] = {
     0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
     -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};
-
+float cubeVertices[] = {
+    // Back face
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // Bottom-left
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,   // top-right
+    0.5f, -0.5f, -0.5f, 1.0f, 0.0f,  // bottom-right
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,   // top-right
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom-left
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,  // top-left
+    // Front face
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, // bottom-left
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,  // bottom-right
+    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,   // top-right
+    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,   // top-right
+    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,  // top-left
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, // bottom-left
+    // Left face
+    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // top-right
+    -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,  // top-left
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom-left
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom-left
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,  // bottom-right
+    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // top-right
+                                     // Right face
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,    // top-left
+    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,  // bottom-right
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,   // top-right
+    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,  // bottom-right
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,    // top-left
+    0.5f, -0.5f, 0.5f, 0.0f, 0.0f,   // bottom-left
+    // Bottom face
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top-right
+    0.5f, -0.5f, -0.5f, 1.0f, 1.0f,  // top-left
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,   // bottom-left
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,   // bottom-left
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,  // bottom-right
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top-right
+    // Top face
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, // top-left
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // bottom-right
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,  // top-right
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // bottom-right
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, // top-left
+    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f   // bottom-left
+};
 glm::vec3 pointLightPositions[] = {
     glm::vec3(0.7f, 0.2f, 2.0f),
     glm::vec3(2.3f, -3.3f, -4.0f),
@@ -103,14 +146,17 @@ int main()
 
     Shader lamp_shader("./shader/lamp.vs", "./shader/lamp.fs");
     Shader model_shader("./shader/model.vs", "./shader/model.fs");
-    Shader single_color_shader("./shader/shaderSingleColor.vs", "./shader/shaderSingleColor.fs");
+    Shader single_color_shader("./shader/singleColor.vs", "./shader/singleColor.fs");
 
     Model m_Model("./object/nanosuit.obj");
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
     glDepthFunc(GL_LESS);
     glEnable(GL_STENCIL_TEST);
-     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     unsigned int lightVAO, VBO;
@@ -119,12 +165,12 @@ int main()
 
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
-//     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     model_shader.userShader();
 
@@ -163,8 +209,6 @@ int main()
 
         glm::mat4 model = glm::mat4(1.0f);
 
-
-
         model_shader.userShader();
         model_shader.setMat4("view", view);
         model_shader.setMat4("projection", projection);
@@ -194,6 +238,7 @@ int main()
 
         m_Model.Draw(single_color_shader);
 
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
         glStencilMask(0xFF);
         glEnable(GL_DEPTH_TEST);
 
