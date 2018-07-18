@@ -33,6 +33,7 @@ struct PointLight
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
+uniform samplerCube skybox;
 
 uniform DirLight dirLight;
 uniform PointLight pointLights[POINT_LIGHTS_COUNT];
@@ -46,15 +47,11 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
 {
-  vec3 norm = normalize(Normal);
-  vec3 viewDir = normalize(viewPos - FragPos);
-
-  vec3 result = CalcDirLight(dirLight, norm, viewDir);
-
-  for (int i = 0; i < POINT_LIGHTS_COUNT; i++)
-    result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
-
-  FragColor = vec4(result, 1.0);;
+    float ratio = 1.00 / 1.52;
+    vec3 I = normalize(FragPos - viewPos);
+    // vec3 R = reflect(I, normalize(Normal));
+    vec3 R = refract(I, normalize(Normal), ratio);
+    FragColor = vec4(texture(skybox, R).rgb, 1.0);
 }
 
 

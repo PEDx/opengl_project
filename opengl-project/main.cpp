@@ -278,6 +278,7 @@ int main()
         model_shader.setMat4("view", view);
         model_shader.setMat4("projection", projection);
         model_shader.setVec3("viewPos", camera.Position);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene // it's a bit too big for our scene, so scale it down
@@ -321,8 +322,6 @@ int main()
         glBindVertexArray(quadVAO);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer); // use the color attachment texture as the texture of the quad plane
         glDrawArrays(GL_TRIANGLES, 0, 6);
-
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();
