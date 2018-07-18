@@ -31,7 +31,7 @@ void processInput(GLFWwindow *window);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-unsigned int loadTexture(char const *path);
+unsigned int loadCubemap(vector<std::string> faces);
 GLFWwindow *createWindow();
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -45,6 +45,50 @@ bool firstMouse = true;
 
 // lighting
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
+float skyboxVertices[] = {
+    // positions
+    -1.0f, 1.0f, -1.0f,
+    -1.0f, -1.0f, -1.0f,
+    1.0f, -1.0f, -1.0f,
+    1.0f, -1.0f, -1.0f,
+    1.0f, 1.0f, -1.0f,
+    -1.0f, 1.0f, -1.0f,
+
+    -1.0f, -1.0f, 1.0f,
+    -1.0f, -1.0f, -1.0f,
+    -1.0f, 1.0f, -1.0f,
+    -1.0f, 1.0f, -1.0f,
+    -1.0f, 1.0f, 1.0f,
+    -1.0f, -1.0f, 1.0f,
+
+    1.0f, -1.0f, -1.0f,
+    1.0f, -1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, -1.0f,
+    1.0f, -1.0f, -1.0f,
+
+    -1.0f, -1.0f, 1.0f,
+    -1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, -1.0f, 1.0f,
+    -1.0f, -1.0f, 1.0f,
+
+    -1.0f, 1.0f, -1.0f,
+    1.0f, 1.0f, -1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f, -1.0f,
+
+    -1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f, 1.0f,
+    1.0f, -1.0f, -1.0f,
+    1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f, 1.0f,
+    1.0f, -1.0f, 1.0f};
 
 float vertices[] = {
     // Back face
@@ -114,6 +158,7 @@ int main()
     Shader lamp_shader("./shader/lamp.vs", "./shader/lamp.fs");
     Shader model_shader("./shader/model.vs", "./shader/model.fs");
     Shader quad_shader("./shader/quad.vs", "./shader/quad.fs");
+    Shader skybox_shader("./shader/skybox.vs", "./shader/skybox.fs");
     Shader single_color_shader("./shader/singleColor.vs", "./shader/singleColor.fs");
 
     Model m_Model("./object/nanosuit.obj");
@@ -132,6 +177,26 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
+
+    unsigned int skyboxVAO, skyboxVBO;
+    glGenVertexArrays(1, &skyboxVAO);
+    glBindVertexArray(skyboxVAO);
+    glGenBuffers(1, &skyboxVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+
+    vector<std::string> faces{
+        "./object/darkskies/darkskies_ft.tga",
+        "./object/darkskies/darkskies_bk.tga",
+        "./object/darkskies/darkskies_up.tga",
+        "./object/darkskies/darkskies_dn.tga",
+        "./object/darkskies/darkskies_rt.tga",
+        "./object/darkskies/darkskies_lf.tga",
+    };
+
+    unsigned int cubemapTexture = loadCubemap(faces);
 
     unsigned int quadVAO, quadVBO;
     glGenVertexArrays(1, &quadVAO);
@@ -197,19 +262,17 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        processInput(window);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glEnable(GL_DEPTH_TEST);
-
-        glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
-
         glm::mat4 view = camera.GetViewMatrix();
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
         glm::mat4 model = glm::mat4(1.0f);
+
+        processInput(window);
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glEnable(GL_DEPTH_TEST);
+        glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
 
         model_shader.userShader();
         model_shader.setMat4("view", view);
@@ -221,7 +284,6 @@ int main()
         model = glm::scale(model, glm::vec3(0.2f));
         model_shader.setMat4("model", model);
         m_Model.Draw(model_shader);
-
 
         lamp_shader.userShader();
         lamp_shader.setMat4("view", view);
@@ -237,7 +299,17 @@ int main()
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
-        glBindVertexArray(0);
+        glDepthFunc(GL_LEQUAL);
+        skybox_shader.userShader();
+        glm::mat4 view_x = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+        skybox_shader.setMat4("view", view_x);
+        skybox_shader.setMat4("projection", projection);
+        glBindVertexArray(skyboxVAO);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDepthFunc(GL_LESS);
+
+        // glBindVertexArray(0);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
@@ -249,6 +321,8 @@ int main()
         glBindVertexArray(quadVAO);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer); // use the color attachment texture as the texture of the quad plane
         glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -352,4 +426,35 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+unsigned int loadCubemap(vector<std::string> faces)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 }
