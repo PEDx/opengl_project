@@ -156,7 +156,7 @@ int main()
     reportGlInfo();
 
     Shader lamp_shader("./shader/lamp.vs", "./shader/lamp.fs");
-    Shader model_shader("./shader/model.vs", "./shader/model.fs");
+    Shader model_shader("./shader/model.vs", "./shader/model.fs", "./shader/model.gs");
     Shader quad_shader("./shader/quad.vs", "./shader/quad.fs");
     Shader skybox_shader("./shader/skybox.vs", "./shader/skybox.fs");
     Shader single_color_shader("./shader/singleColor.vs", "./shader/singleColor.fs");
@@ -269,7 +269,7 @@ int main()
         glm::mat4 model = glm::mat4(1.0f);
 
         processInput(window);
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        // glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glEnable(GL_DEPTH_TEST);
         glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
@@ -278,7 +278,7 @@ int main()
         model_shader.setMat4("view", view);
         model_shader.setMat4("projection", projection);
         model_shader.setVec3("viewPos", camera.Position);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        model_shader.setFloat("time", glfwGetTime());
 
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene // it's a bit too big for our scene, so scale it down
@@ -311,17 +311,15 @@ int main()
         glDepthFunc(GL_LESS);
 
         // glBindVertexArray(0);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-        // clear all relevant buffers
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        quad_shader.userShader();
-        glBindVertexArray(quadVAO);
-        glBindTexture(GL_TEXTURE_2D, textureColorbuffer); // use the color attachment texture as the texture of the quad plane
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+        // // clear all relevant buffers
+        // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
+        // glClear(GL_COLOR_BUFFER_BIT);
+        // quad_shader.userShader();
+        // glBindVertexArray(quadVAO);
+        // glBindTexture(GL_TEXTURE_2D, textureColorbuffer); // use the color attachment texture as the texture of the quad plane
+        // glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -348,7 +346,7 @@ GLFWwindow *createWindow()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    GLFWwindow *window = glfwCreateWindow(800, 600, "Hello OpenGL", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Hello OpenGL", NULL, NULL);
     glfwMakeContextCurrent(window);
 
     if (!window)

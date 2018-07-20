@@ -10,15 +10,18 @@
 
 using namespace std;
 
-Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
+Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath, const char *geometryPath)
 {
   std::string vertextStr;
   std::string fragmentStr;
+  std::string geometryStr;
   std::ifstream vShaderFile;
   std::ifstream fShaderFile;
+  std::ifstream gShaderFile;
 
   vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
   fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+  gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
   try
   {
@@ -34,6 +37,15 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
 
     vertextStr = vShaderStream.str();
     fragmentStr = fShaderStream.str();
+
+    if (geometryPath != nullptr)
+    {
+      gShaderFile.open(geometryPath);
+      std::stringstream gShaderStream;
+      gShaderStream << gShaderFile.rdbuf();
+      gShaderFile.close();
+      geometryStr = gShaderStream.str();
+    }
   }
   catch (std::ifstream::failure e)
   {
@@ -53,15 +65,27 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
   glShaderSource(fragmentShader, 1, &fShaderCode, NULL);
   glCompileShader(fragmentShader);
   checkShaderCompileErrors(fragmentShader, "FRAGMENT");
+  // geometry shader
+  unsigned int geometryShader;
+  if (geometryPath != nullptr)
+  {
+    const char *gShaderCode = geometryStr.c_str();
+    geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+    glShaderSource(geometryShader, 1, &gShaderCode, NULL);
+    glCompileShader(geometryShader);
+    checkShaderCompileErrors(geometryShader, "GEOMETRY");
+  }
 
   ID = glCreateProgram();
   glAttachShader(ID, vertexShader);
   glAttachShader(ID, fragmentShader);
+  glAttachShader(ID, geometryShader);
   glLinkProgram(ID);
   checkShaderCompileErrors(ID, "PROGRAM");
 
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
+  glDeleteShader(geometryShader);
 };
 
 void Shader::userShader()
