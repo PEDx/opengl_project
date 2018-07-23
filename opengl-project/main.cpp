@@ -23,11 +23,13 @@
 
 const float SCR_WIDTH = 800;
 const float SCR_HEIGHT = 600;
+GLboolean BLINN_PHONG = false;
 
 using namespace std;
 
 void reportGlInfo();
-void processInput(GLFWwindow *window);
+void Do_Movement();
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
@@ -165,6 +167,7 @@ int main()
     Model m_Model("./object/nanosuit.obj");
     Model m_RockModel("./object/rock.obj");
 
+    glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -232,7 +235,6 @@ int main()
         model_shader.setFloat(t_str + "].quadratic", 0.032);
     }
 
-
     instance_shader.userShader();
     instance_shader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
     instance_shader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
@@ -251,9 +253,6 @@ int main()
         instance_shader.setFloat(t_str + "].linear", 0.09);
         instance_shader.setFloat(t_str + "].quadratic", 0.032);
     }
-
-
-
 
     quad_shader.userShader();
     quad_shader.setInt("screenTexture", 0);
@@ -352,7 +351,7 @@ int main()
 
         glm::mat4 model = glm::mat4(1.0f);
 
-        processInput(window);
+        Do_Movement();
         // glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glEnable(GL_DEPTH_TEST);
         glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
@@ -362,6 +361,7 @@ int main()
         model_shader.setMat4("view", view);
         model_shader.setMat4("projection", projection);
         model_shader.setVec3("viewPos", camera.Position);
+        model_shader.setBool("blinn", BLINN_PHONG);
 
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene // it's a bit too big for our scene, so scale it down
@@ -449,6 +449,7 @@ GLFWwindow *createWindow()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_SAMPLES, 4);
     GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Hello OpenGL", NULL, NULL);
     glfwMakeContextCurrent(window);
 
@@ -464,6 +465,7 @@ GLFWwindow *createWindow()
     }
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
@@ -504,18 +506,44 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-void processInput(GLFWwindow *window)
+
+bool keys[1024];
+bool keysPressed[1024];
+// Moves/alters the camera positions based on user input
+void Do_Movement()
 {
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    // Camera controls
+    if (keys[GLFW_KEY_W])
         camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    if (keys[GLFW_KEY_S])
         camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    if (keys[GLFW_KEY_A])
         camera.ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (keys[GLFW_KEY_D])
         camera.ProcessKeyboard(RIGHT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+
+    if (keys[GLFW_KEY_B] && !keysPressed[GLFW_KEY_B])
+    {
+        BLINN_PHONG = !BLINN_PHONG;
+        keysPressed[GLFW_KEY_B] = true;
+    }
+}
+// Is called whenever a key is pressed/released via GLFW
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+
+    if (key >= 0 && key <= 1024)
+    {
+        if (action == GLFW_PRESS)
+            keys[key] = true;
+        else if (action == GLFW_RELEASE)
+        {
+            keys[key] = false;
+            keysPressed[key] = false;
+        }
+    }
 }
 
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
