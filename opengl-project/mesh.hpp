@@ -29,6 +29,7 @@ struct Texture
 class Mesh
 {
 public:
+  unsigned int VAO;
   vector<Vertex> vertices;
   vector<unsigned int> indices;
   vector<Texture> textures;
@@ -42,6 +43,7 @@ public:
   void Draw(Shader shader)
   {
     // bind appropriate textures
+
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     for (unsigned int i = 0; i < textures.size(); i++)
@@ -70,7 +72,7 @@ public:
   };
 
 private:
-  unsigned int VAO, VBO, EBO;
+  unsigned int VBO, EBO;
   void steupMesh()
   {
     glGenVertexArrays(1, &VAO);

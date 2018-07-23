@@ -156,12 +156,14 @@ int main()
     reportGlInfo();
 
     Shader lamp_shader("./shader/lamp.vs", "./shader/lamp.fs");
-    Shader model_shader("./shader/model.vs", "./shader/model.fs", "./shader/model.gs");
+    Shader model_shader("./shader/model.vs", "./shader/model.fs");
     Shader quad_shader("./shader/quad.vs", "./shader/quad.fs");
     Shader skybox_shader("./shader/skybox.vs", "./shader/skybox.fs");
+    Shader instance_shader("./shader/model_ins.vs", "./shader/model_ins.fs");
     Shader single_color_shader("./shader/singleColor.vs", "./shader/singleColor.fs");
 
     Model m_Model("./object/nanosuit.obj");
+    Model m_RockModel("./object/rock.obj");
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -230,6 +232,29 @@ int main()
         model_shader.setFloat(t_str + "].quadratic", 0.032);
     }
 
+
+    instance_shader.userShader();
+    instance_shader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+    instance_shader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+    instance_shader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+    instance_shader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+
+    for (int i = 0; i < 4; i++)
+    {
+        string t_str = "pointLights[";
+        t_str += to_string(i);
+        instance_shader.setVec3(t_str + "].position", pointLightPositions[i]);
+        instance_shader.setVec3(t_str + "].ambient", 0.05f, 0.05f, 0.05f);
+        instance_shader.setVec3(t_str + "].diffuse", 0.8f, 0.8f, 0.8f);
+        instance_shader.setVec3(t_str + "].specular", 1.0f, 1.0f, 1.0f);
+        instance_shader.setFloat(t_str + "].constant", 1.0f);
+        instance_shader.setFloat(t_str + "].linear", 0.09);
+        instance_shader.setFloat(t_str + "].quadratic", 0.032);
+    }
+
+
+
+
     quad_shader.userShader();
     quad_shader.setInt("screenTexture", 0);
 
@@ -256,6 +281,65 @@ int main()
         cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    unsigned int amount = 10000;
+    glm::mat4 *modelMatrices;
+    modelMatrices = new glm::mat4[amount];
+    srand(glfwGetTime()); // 初始化随机种子
+    float radius = 20.0;
+    float offset = 3.0f;
+    for (unsigned int i = 0; i < amount; i++)
+    {
+        glm::mat4 model = glm::mat4(1.0f);
+        // 1. 位移：分布在半径为 'radius' 的圆形上，偏移的范围是 [-offset, offset]
+        float angle = (float)i / (float)amount * 360.0f;
+        float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+        float x = sin(angle) * radius + displacement;
+        displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+        float y = displacement * 0.4f; // 让行星带的高度比x和z的宽度要小
+        displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+        float z = cos(angle) * radius + displacement;
+        model = glm::translate(model, glm::vec3(x, y, z));
+
+        // 2. 缩放：在 0.05 和 0.25f 之间缩放
+        float scale = (rand() % 20) / 100.0f + 0.05;
+        model = glm::scale(model, glm::vec3(scale / 2.5));
+
+        // 3. 旋转：绕着一个（半）随机选择的旋转轴向量进行随机的旋转
+        float rotAngle = (rand() % 360);
+        model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+
+        // 4. 添加到矩阵的数组中
+        modelMatrices[i] = model;
+    }
+
+    unsigned int buffer;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+
+    for (unsigned int i = 0; i < m_RockModel.meshes.size(); i++)
+    {
+        unsigned int VAO = m_RockModel.meshes[i].VAO;
+        glBindVertexArray(VAO);
+        // 顶点属性
+        GLsizei vec4Size = sizeof(glm::vec4);
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *)0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *)(vec4Size));
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *)(2 * vec4Size));
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *)(3 * vec4Size));
+
+        glVertexAttribDivisor(3, 1);
+        glVertexAttribDivisor(4, 1);
+        glVertexAttribDivisor(5, 1);
+        glVertexAttribDivisor(6, 1);
+
+        glBindVertexArray(0);
+    }
+
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -278,13 +362,29 @@ int main()
         model_shader.setMat4("view", view);
         model_shader.setMat4("projection", projection);
         model_shader.setVec3("viewPos", camera.Position);
-        model_shader.setFloat("time", glfwGetTime());
 
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene // it's a bit too big for our scene, so scale it down
-        model = glm::scale(model, glm::vec3(0.2f));
+        model = glm::scale(model, glm::vec3(0.3f));
         model_shader.setMat4("model", model);
         m_Model.Draw(model_shader);
+
+        instance_shader.userShader();
+        instance_shader.setMat4("view", view);
+        instance_shader.setMat4("projection", projection);
+        instance_shader.setVec3("viewPos", camera.Position);
+
+        instance_shader.setInt("texture_diffuse1", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_RockModel.textures_loaded[0].id);
+
+        for (unsigned int i = 0; i < m_RockModel.meshes.size(); i++)
+        {
+            glBindVertexArray(m_RockModel.meshes[i].VAO);
+            glDrawElementsInstanced(
+                GL_TRIANGLES, m_RockModel.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, amount);
+            glBindVertexArray(0);
+        }
 
         lamp_shader.userShader();
         lamp_shader.setMat4("view", view);
@@ -295,7 +395,7 @@ int main()
         {
             model = glm::mat4(1.0f);
             model = glm::translate(model, pointLightPositions[i]);
-            model = glm::scale(model, glm::vec3(0.2f));
+            model = glm::scale(model, glm::vec3(0.5f));
             lamp_shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
@@ -305,6 +405,9 @@ int main()
         glm::mat4 view_x = glm::mat4(glm::mat3(camera.GetViewMatrix()));
         skybox_shader.setMat4("view", view_x);
         skybox_shader.setMat4("projection", projection);
+        model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(10.0f));
+        skybox_shader.setMat4("model", model);
         glBindVertexArray(skyboxVAO);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
