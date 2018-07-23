@@ -57,8 +57,10 @@ void main()
   for (int i = 0; i < POINT_LIGHTS_COUNT; i++)
     result += CalcPointLight(pointLights[i], norm, fs_in.fragPos, viewDir);
 
+  // apply gamma correction
+  // float gamma = 2.2;
+  // result = pow(result, vec3(1.0 / gamma));
   FragColor = vec4(result, 1.0);
-  ;
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
