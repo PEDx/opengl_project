@@ -46,7 +46,7 @@ float lastFrame = 0.0f;
 bool firstMouse = true;
 
 // lighting
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(-1.2f, 0.5f, 2.0f);
 
 float skyboxVertices[] = {
     // positions
@@ -160,6 +160,7 @@ int main()
     Shader lamp_shader("./shader/lamp.vs", "./shader/lamp.fs");
     Shader model_shader("./shader/model.vs", "./shader/model.fs");
     Shader quad_shader("./shader/quad.vs", "./shader/quad.fs");
+    Shader shadow_depth_shader("./shader/shadow_mapping_depth.vs", "./shader/shadow_mapping_depth.fs");
     Shader skybox_shader("./shader/skybox.vs", "./shader/skybox.fs");
     Shader instance_shader("./shader/model_ins.vs", "./shader/model_ins.fs");
     Shader single_color_shader("./shader/singleColor.vs", "./shader/singleColor.fs");
@@ -254,37 +255,11 @@ int main()
         instance_shader.setFloat(t_str + "].quadratic", 0.032);
     }
 
-    quad_shader.userShader();
-    quad_shader.setInt("screenTexture", 0);
-
-    // framebuffer configuration
-    unsigned int framebuffer;
-    glGenFramebuffers(1, &framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    // create a color attachment texture
-    unsigned int textureColorbuffer;
-    glGenTextures(1, &textureColorbuffer);
-    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-    // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-    unsigned int rbo;
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);           // use a single renderbuffer object for both a depth AND stencil buffer.
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
-    // now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     unsigned int amount = 10000;
     glm::mat4 *modelMatrices;
     modelMatrices = new glm::mat4[amount];
     srand(glfwGetTime()); // 初始化随机种子
-    float radius = 20.0;
+    float radius = 5.0;
     float offset = 3.0f;
     for (unsigned int i = 0; i < amount; i++)
     {
@@ -339,6 +314,40 @@ int main()
         glBindVertexArray(0);
     }
 
+    quad_shader.userShader();
+    quad_shader.setInt("screenTexture", 0);
+
+    // Configure depth map FBO
+    const GLuint SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    GLuint depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+    // - Create depth texture
+    GLuint depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // 1. Render depth of scene to texture (from light's perspective)
+    // - Get light projection/view matrix.
+    glm::mat4 lightProjection, lightView;
+    glm::mat4 lightSpaceMatrix;
+    GLfloat near_plane = 1.0f, far_plane = 7.5f;
+    lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+    lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+    lightSpaceMatrix = lightProjection * lightView;
+    // - render scene from light's point of view
+    glViewport(0, 0, SCR_WIDTH * 2, SCR_HEIGHT * 2);
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -352,10 +361,30 @@ int main()
         glm::mat4 model = glm::mat4(1.0f);
 
         Do_Movement();
-        // glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glEnable(GL_DEPTH_TEST);
         glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
+
+        shadow_depth_shader.userShader();
+        glUniformMatrix4fv(glGetUniformLocation(shadow_depth_shader.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        // model_shader
+        shadow_depth_shader.userShader();
+        shadow_depth_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene // it's a bit too big for our scene, so scale it down
+        model = glm::scale(model, glm::vec3(0.3f));
+        shadow_depth_shader.setMat4("model", model);
+        m_Model.Draw(shadow_depth_shader);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glViewport(0, 0, SCR_WIDTH * 2, SCR_HEIGHT * 2);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         model_shader.userShader();
         model_shader.setMat4("view", view);
@@ -369,14 +398,20 @@ int main()
         model_shader.setMat4("model", model);
         m_Model.Draw(model_shader);
 
+        // instance_shader
         instance_shader.userShader();
         instance_shader.setMat4("view", view);
         instance_shader.setMat4("projection", projection);
         instance_shader.setVec3("viewPos", camera.Position);
+        instance_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
         instance_shader.setInt("texture_diffuse1", 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_RockModel.textures_loaded[0].id);
+
+        instance_shader.setInt("shadowMap", 1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
 
         for (unsigned int i = 0; i < m_RockModel.meshes.size(); i++)
         {
@@ -386,6 +421,7 @@ int main()
             glBindVertexArray(0);
         }
 
+        // lamp_shader
         lamp_shader.userShader();
         lamp_shader.setMat4("view", view);
         lamp_shader.setMat4("projection", projection);
@@ -401,6 +437,8 @@ int main()
         }
 
         glDepthFunc(GL_LEQUAL);
+
+        // skybox_shader
         skybox_shader.userShader();
         glm::mat4 view_x = glm::mat4(glm::mat3(camera.GetViewMatrix()));
         skybox_shader.setMat4("view", view_x);
@@ -412,17 +450,6 @@ int main()
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glDepthFunc(GL_LESS);
-
-        // glBindVertexArray(0);
-        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        // glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-        // // clear all relevant buffers
-        // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
-        // glClear(GL_COLOR_BUFFER_BIT);
-        // quad_shader.userShader();
-        // glBindVertexArray(quadVAO);
-        // glBindTexture(GL_TEXTURE_2D, textureColorbuffer); // use the color attachment texture as the texture of the quad plane
-        // glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -505,7 +532,6 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
-
 
 bool keys[1024];
 bool keysPressed[1024];
