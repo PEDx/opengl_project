@@ -226,8 +226,9 @@ int main()
     for (int i = 0; i < 4; i++)
     {
         string t_str = "pointLights[";
+        string t_st2 = "pointLightsPos[";
         t_str += to_string(i);
-        model_shader.setVec3(t_str + "].position", pointLightPositions[i]);
+        model_shader.setVec3(t_st2 + "]", pointLightPositions[i]);
         model_shader.setVec3(t_str + "].ambient", 0.05f, 0.05f, 0.05f);
         model_shader.setVec3(t_str + "].diffuse", 0.8f, 0.8f, 0.8f);
         model_shader.setVec3(t_str + "].specular", 1.0f, 1.0f, 1.0f);
@@ -392,6 +393,7 @@ int main()
         model_shader.userShader();
         model_shader.setMat4("view", view);
         model_shader.setMat4("projection", projection);
+        model_shader.setVec3("lightPos", glm::vec3(-0.2f, -1.0f, -0.3f));
         model_shader.setVec3("viewPos", camera.Position);
         model_shader.setBool("blinn", BLINN_PHONG);
 

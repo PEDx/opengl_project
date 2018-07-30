@@ -17,6 +17,8 @@ struct Vertex
   glm::vec3 Position;
   glm::vec3 Normal;
   glm::vec2 TexCoords;
+  glm::vec3 Tangent;
+  glm::vec3 Bitangent;
 };
 
 struct Texture
@@ -46,6 +48,7 @@ public:
 
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
+    unsigned int normalNr = 1;
     for (unsigned int i = 0; i < textures.size(); i++)
     {
       glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
@@ -56,6 +59,8 @@ public:
         number = std::to_string(diffuseNr++);
       else if (name == "texture_specular")
         number = std::to_string(specularNr++); // transfer unsigned int to stream
+      else if (name == "texture_normal")
+        number = std::to_string(normalNr++); // transfer unsigned int to stream
       // now set the sampler to the correct texture unit
       glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
       // and finally bind the texture
@@ -96,6 +101,12 @@ private:
 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, TexCoords));
     glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, Tangent));
+    glEnableVertexAttribArray(3);
+
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, Bitangent));
+    glEnableVertexAttribArray(4);
 
     glBindVertexArray(0);
   };

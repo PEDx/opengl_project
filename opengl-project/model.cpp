@@ -18,7 +18,7 @@ void Model::loadModel(string path)
 {
   Assimp::Importer importer;
 
-  const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+  const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
   {
@@ -59,6 +59,17 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     vector.y = mesh->mVertices[i].y;
     vector.z = mesh->mVertices[i].z;
     vertex.Position = vector;
+
+    vector.x = mesh->mTangents[i].x;
+    vector.y = mesh->mTangents[i].y;
+    vector.z = mesh->mTangents[i].z;
+    vertex.Tangent = vector;
+
+    // bitangent
+    vector.x = mesh->mBitangents[i].x;
+    vector.y = mesh->mBitangents[i].y;
+    vector.z = mesh->mBitangents[i].z;
+    vertex.Bitangent = vector;
 
     if (mesh->mNormals)
     {
@@ -101,6 +112,11 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
                                                       aiTextureType_SPECULAR, "texture_specular");
 
   textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
+  // 3. normal maps
+  vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+  textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+
   return Mesh(vertices, indices, textures);
 }
 
