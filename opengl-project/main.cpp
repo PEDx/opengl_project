@@ -46,7 +46,7 @@ float lastFrame = 0.0f;
 bool firstMouse = true;
 
 // lighting
-glm::vec3 lightPos(-1.2f, 0.5f, 2.0f);
+glm::vec3 lightPos(1.2f, 0.5f, 2.0f);
 
 float skyboxVertices[] = {
     // positions
@@ -340,13 +340,6 @@ int main()
 
     // 1. Render depth of scene to texture (from light's perspective)
     // - Get light projection/view matrix.
-    glm::mat4 lightProjection, lightView;
-    glm::mat4 lightSpaceMatrix;
-    GLfloat near_plane = 1.0f, far_plane = 7.5f;
-    lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-    lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-    lightSpaceMatrix = lightProjection * lightView;
-    // - render scene from light's point of view
     glViewport(0, 0, SCR_WIDTH * 2, SCR_HEIGHT * 2);
     while (!glfwWindowShouldClose(window))
     {
@@ -360,6 +353,16 @@ int main()
 
         glm::mat4 model = glm::mat4(1.0f);
 
+        float timeValue = glfwGetTime();
+        lightPos = glm::vec3(cos(timeValue), 0.5, sin(timeValue) * 2.0);
+
+        glm::mat4 lightProjection,
+            lightView;
+        glm::mat4 lightSpaceMatrix;
+        GLfloat near_plane = 1.0f, far_plane = 7.5f;
+        lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+        lightSpaceMatrix = lightProjection * lightView;
         Do_Movement();
         glEnable(GL_DEPTH_TEST);
         glClearColor(0.07f, 0.149f, 0.227f, 1.0f);
