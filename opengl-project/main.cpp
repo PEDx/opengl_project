@@ -430,6 +430,12 @@ int main()
         lamp_shader.userShader();
         lamp_shader.setMat4("view", view);
         lamp_shader.setMat4("projection", projection);
+        lamp_shader.setVec3("viewPos", camera.Position);
+
+        lamp_shader.setFloat("iTime", timeValue);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_RockModel.textures_loaded[0].id);
 
         glBindVertexArray(lightVAO);
         for (unsigned int i = 0; i < 4; i++)

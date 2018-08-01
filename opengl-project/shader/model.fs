@@ -68,7 +68,7 @@ void main()
   // apply gamma correction
   // float gamma = 2.2;
   // result = pow(result, vec3(1.0 / gamma));
-  FragColor = vec4(result * 2.0, 1.0);
+  FragColor = vec4(result, 1.0);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
